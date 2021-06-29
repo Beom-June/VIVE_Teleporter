@@ -20,6 +20,8 @@ namespace Valve.VR.Extras
         bool isActive = false;
         public bool addRigidBody = false;
         public Transform reference;
+
+        // PointerEventHandler에 대응하는 델리게이트 함수.
         public event PointerEventHandler PointerIn;
         public event PointerEventHandler PointerOut;
         public event PointerEventHandler PointerClick;
@@ -30,13 +32,17 @@ namespace Valve.VR.Extras
         private void Start()
         {
             if (pose == null)
+            {
                 pose = this.GetComponent<SteamVR_Behaviour_Pose>();
+            }
             if (pose == null)
+            {
                 Debug.LogError("No SteamVR_Behaviour_Pose component found on this object", this);
-
+            }
             if (interactWithUI == null)
+            {
                 Debug.LogError("No ui interaction action has been set on this component.", this);
-
+            }
 
             holder = new GameObject();
             holder.transform.parent = this.transform;
@@ -48,6 +54,7 @@ namespace Valve.VR.Extras
             pointer.transform.localScale = new Vector3(thickness, thickness, 100f);
             pointer.transform.localPosition = new Vector3(0f, 0f, 50f);
             pointer.transform.localRotation = Quaternion.identity;
+
             BoxCollider collider = pointer.GetComponent<BoxCollider>();
             if (addRigidBody)
             {
@@ -73,19 +80,25 @@ namespace Valve.VR.Extras
         public virtual void OnPointerIn(PointerEventArgs e)
         {
             if (PointerIn != null)
+            {
                 PointerIn(this, e);
+            }
         }
 
         public virtual void OnPointerClick(PointerEventArgs e)
         {
             if (PointerClick != null)
+            {
                 PointerClick(this, e);
+            }
         }
 
         public virtual void OnPointerOut(PointerEventArgs e)
         {
             if (PointerOut != null)
+            { 
                 PointerOut(this, e);
+            }
         }
 
 
@@ -99,6 +112,7 @@ namespace Valve.VR.Extras
 
             float dist = 100f;
 
+            // Raycast를 쏨.
             Ray raycast = new Ray(transform.position, transform.forward);
             RaycastHit hit;
             bool bHit = Physics.Raycast(raycast, out hit);
@@ -139,6 +153,8 @@ namespace Valve.VR.Extras
                 argsClick.distance = hit.distance;
                 argsClick.flags = 0;
                 argsClick.target = hit.transform;
+
+                // 각각의 정보를 담음.
                 OnPointerClick(argsClick);
             }
 
@@ -156,6 +172,8 @@ namespace Valve.VR.Extras
         }
     }
 
+
+    // 구조체
     public struct PointerEventArgs
     {
         public SteamVR_Input_Sources fromInputSource;
